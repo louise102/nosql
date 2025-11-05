@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NoSQL Bootstrap App</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+        body {
+            color: #333;
+            font-family: Arial, sans-serif;
+            padding-top: 20px;
+            background-color: 
+#f8f9fa;
+        }
+
+        .app-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: 
+#ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: 
+#007bff;
+        }
+
+        .btn-primary {
+            background-color: 
+#007bff;
+            border-color: 
+#007bff;
+            padding: 10px 15px;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: 
+#0056b3;
+            border-color: 
+#004085;
+        }
+
+        .table {
+            margin-top: 30px;
+        }
+
+        .table thead th {
+            background-color: 
+#e9ecef;
+            color: 
+#495057;
+            font-weight: bold;
+            border-bottom: 2px solid 
+#dee2e6;
+        }
+
+        .table-striped > tbody > tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.03);
+        }
+    </style>
+</head>
+<body>
+
+    <h2 class="text-center">NoSQL Database (MongoDB) with Bootstrap</h2>
+
+    <div class="container app-container mt-5">
+
+        <div class="card p-4 mb-4">
+            <h4 class="card-title">Register User</h4>
+            <form id="userForm">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </form>
+        </div>
+
+        <div>
+            <h4 class="mb-3">Stored Records</h4>
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody id="userTable">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZ3Q3g1wK0TjF7dO" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <script>
+        const API_URL = "http://localhost:5000/api/users";
+
+        document.getElementById("userForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+
+            try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ name, email })
+                });
+
+                if (response.ok) {
+                    alert("User registered successfully!");
+                    document.getElementById("userForm").reset();
+                    fetchUsers();
+                } else {
+                    const errorData = await response.json();
+                    alert("Registration failed: " + (errorData.message || response.statusText));
+                }
+            } catch (error) {
+                console.error("Error during registration:", error);
+                alert("An error occurred. Check the console for details.");
+            }
+        });
+
+        async function fetchUsers() {
+            const userTableBody = document.getElementById("userTable");
+            userTableBody.innerHTML = '<tr><td colspan="2">Loading records...</td></tr>';
+
+            try {
+                const response = await fetch(API_URL);
+                const users = await response.json();
+
+                userTableBody.innerHTML = '';
+
+                if (users && users.length > 0) {
+                    users.forEach(user => {
+                        const row = userTableBody.insertRow();
+                        row.insertCell(0).textContent = user.name;
+                        row.insertCell(1).textContent = user.email;
+                    });
+                } else {
+                    userTableBody.innerHTML = '<tr><td colspan="2">No records found.</td></tr>';
+                }
+
+            } catch (error) {
+                console.error("Error fetching users:", error);
+                userTableBody.innerHTML = '<tr><td colspan="2" class="text-danger">Failed to load records. Ensure your server is running.</td></tr>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchUsers);
+    </script>
+</body>
+</html>
