@@ -1,0 +1,28 @@
+{
+  "name": "nosql-bootstrap-app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "body-parser": "^2.2.0",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "mongoose": "^8.19.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/louise102/nosql.git"
+  },
+  "bugs": {
+    "url": "https://github.com/louise102/nosql/issues"
+  },
+  "homepage": "https://github.com/louise102/nosql#readme"
+}
