@@ -28,6 +28,11 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
+// THIS ROUTE FIXES YOUR HOMEPAGE!
+app.get('/', (req, res) => {
+    res.send('Welcome to the NoSQL API! Try /api/users to see users.');
+});
+
 app.get('/api/users', async (req, res) => {
     try {
         const users = await User.find().select('-__v');
@@ -73,7 +78,6 @@ app.post('/api/users', async (req, res) => {
     }
 });
 
-// CLASSIC CONCATENATION: *THIS FIXES THE SYNTAX ERROR*
 app.listen(PORT, function () {
     console.log('Server started on port ' + PORT);
 });
